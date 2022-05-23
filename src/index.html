@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script src="./index.js"></script>
+
+  <div id="app">
+    <h2>插值表达式：姓名{{name}}，爱好{{hobby}}</h2>
+    <h2>
+      m-text:<span m-text="name"></span>
+    </h2>
+    <h2 m-html="myHtml"></h2>
+  </div>
+  <script>
+    const myvue = new MVue({
+      el: "#app",
+      data: {
+        name: "cxx",
+        myHtml: "<div style='color:red'>m-html</div>",
+        hobby: "swim"
+      }
+    })
+
+    // setTimeout(() => {
+    //   myvue.$data.name = "cxxgo!"
+    // }, 1000)
+
+    // setTimeout(() => {
+    //   myvue.$data.hobby.swim = false  // 多层对象也能响应
+    // }, 2000)
+
+    // setTimeout(() => {
+    //   myvue.$set(myvue.$data, "hate", { fruit: "apple" })
+    //   myvue.$data.hate.fruit = "pear"  // 新增对象也能响应
+    // }, 3000)
+
+    // setTimeout(() => {
+    //   myvue.hate.fruit = "banana"  // 代理后能直接通过this.xxx,而非this.$data.xxx 改变数据了！
+    // }, 4000)
+
+  </script>
+
+</body>
+
+</html>
