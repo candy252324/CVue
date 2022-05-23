@@ -24,13 +24,14 @@
       data: {
         name: "cxx",
         myHtml: "<div style='color:red'>m-html</div>",
-        hobby: "swim"
+        hobby: "swim",
+        arr:[1,2,3]
       }
     })
 
-    // setTimeout(() => {
-    //   myvue.$data.name = "cxxgo!"
-    // }, 1000)
+    setTimeout(() => {
+      myvue.$data.arr.push(123)
+    }, 1000)
 
     // setTimeout(() => {
     //   myvue.$data.hobby.swim = false  // 多层对象也能响应

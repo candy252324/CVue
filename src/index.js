@@ -23,7 +23,8 @@ class MVue {
   /** 新增属性也要劫持 */
   set(obj, key, value) {
     this.$data[key] = value
-    if (Object.prototype.toString.call(value) === "[object Object]") {
+    // 数组或对象
+    if (value && typeof(value)==="object") {
       new Observer(value)
     } else {
       defineProperty(obj, key, value)
@@ -40,19 +41,41 @@ class Observer {
     this.walk(obj)  // 递归数据劫持
   }
   walk(obj) {
-    if (Object.prototype.toString.call(obj) !== '[object Object]') {
-      return
+    // 数组响应式
+    if(Array.isArray(obj)){
+      obj.__proto__ = newArrayProto
+    } 
+    //对象响应式
+    else if(Object.prototype.toString.call(obj) === '[object Object]'){
+      Object.keys(obj).forEach(key => {
+        // 对象或数组
+        if (obj[key] && typeof(obj[key])==="object") {
+          this.walk(obj[key])
+        } else {
+          defineProperty(obj, key, obj[key])
+        }
+      })
     }
-    Object.keys(obj).forEach(key => {
-      // 递归转化为响应式数据
-      if (Object.prototype.toString.call(obj[key]) === "[object Object]") {
-        this.walk(obj[key])
-      } else {
-        defineProperty(obj, key, obj[key])
-      }
-    })
   }
 }
+
+// 数组响应式
+const arrayProto = Array.prototype
+const newArrayProto = Object.create(arrayProto)
+// 为什么是这7个方法？因为数组上只有这7个方法会改变原数组，其它都是返回新数组
+const methodsToPatch = ["push", "pop", "unshift", "shift", "splice", "sort", "reverse"]
+methodsToPatch.forEach(method => {
+  Object.defineProperty(newArrayProto, method, {
+    value: function (...args) {
+      const ret = arrayProto[method].apply(this, args) // 7个方法完成本职工作
+      console.log("数组也变成响应式啦！")
+      return ret
+    },
+    configurable: true,
+    writable: true,
+    enumerable: false
+  })
+})
 
 /** 模板编译 */
 class Compiler {
