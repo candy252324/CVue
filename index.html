@@ -9,8 +9,6 @@
 </head>
 
 <body>
-  <script src="./index.js"></script>
-
   <div id="app">
     <h2>插值表达式：姓名{{name}}，爱好{{hobby}}</h2>
     <h2>
@@ -18,7 +16,8 @@
     </h2>
     <h2 m-html="myHtml"></h2>
   </div>
-  <script>
+  <script type="module">
+    import MVue from './index.mjs'
     const myvue = new MVue({
       el: "#app",
       data: {
