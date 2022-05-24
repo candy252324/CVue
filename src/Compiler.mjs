@@ -1,3 +1,4 @@
+import Watcher from './Watcher.mjs'
 /** 模板编译 */
 export default class Compiler {
   constructor(el, vm) {
@@ -24,10 +25,24 @@ export default class Compiler {
     let nodeTextStr = node.textContent
     const matchArr = new Set(nodeTextStr.match(/\{\{.*?\}\}/g))  // ["{{name}}","{{hobby}}"] 
     matchArr.forEach(matchStr => {
-      const exp = matchStr.replace(/\{/g, "").replace(/\}/g, "")  // 取到插值里表达式： "name" or "hobby"
+      const exp = matchStr.replace(/\{/g, "").replace(/\}/g, "").trim()  // 取到插值里表达式： "name" or "hobby"
+      // ！！！！注意：Watcher 的回调函数中必须要有 this.xxx 的数据读取操作，用于触发getter，收集依赖
+      new Watcher(() => {
+        // 这里 nodeTextStr保留的是之前带花括号的文本, 形如 “我是{{name}},爱好{{hobby}}”
+        // 导致的结果是，forEach循环后只有最后一个插值被数据内容替换,所以这里加了一个方法updateOtherText用于更新剩下的插值表达式内容
+        node.textContent = nodeTextStr.replace(new RegExp(matchStr, "g"), this.$vm[exp])  //  将"{{name}}" 替换成"name"的值
+        this.updateOtherText(node, matchArr)
+      })
+    })
+  }
+  // cjh todo 这里写的不太好
+  updateOtherText(node, matchArr) {
+    let nodeTextStr = node.textContent
+    matchArr.forEach(matchStr => {
+      const exp = matchStr.replace(/\{/g, "").replace(/\}/g, "").trim()   // 取到插值里表达式： "name" or "hobby"
       nodeTextStr = nodeTextStr.replace(new RegExp(matchStr, "g"), this.$vm[exp]) // 将"{{name}}" 替换成"name"的值
     })
-    node.textContent = nodeTextStr
+    node.textContent = nodeTextStr  // 所有的插值表达式都被替换了
   }
   // 编译元素
   compileElement(node) {

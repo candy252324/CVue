@@ -10,7 +10,7 @@
 
 <body>
   <div id="app">
-    <h2>插值表达式：姓名{{name}}，爱好{{hobby}}</h2>
+    <h2>插值表达式：姓名{{ name}}，爱好{{hobby}}</h2>
     <h2>
       m-text:<span m-text="name"></span>
     </h2>
@@ -28,6 +28,10 @@
         arr: [1, { name: "hhh" }, 3]
       }
     })
+
+    setInterval(() => {
+      myvue.name = Math.random()
+    }, 1000)
 
 
     setTimeout(() => {
