@@ -22,9 +22,10 @@
       el: "#app",
       data: {
         name: "cxx",
+        fName: { firstName: "chen" },
         myHtml: "<div style='color:red'>m-html</div>",
         hobby: "swim",
-        arr:[1,2,3]
+        arr: [1, 2, 3]
       }
     })
 
@@ -32,18 +33,18 @@
       myvue.$data.arr.push(123)
     }, 1000)
 
-    // setTimeout(() => {
-    //   myvue.$data.hobby.swim = false  // 多层对象也能响应
-    // }, 2000)
+    setTimeout(() => {
+      myvue.$data.fName.firstName = "nie"  // 多层对象也能响应
+    }, 2000)
 
-    // setTimeout(() => {
-    //   myvue.$set(myvue.$data, "hate", { fruit: "apple" })
-    //   myvue.$data.hate.fruit = "pear"  // 新增对象也能响应
-    // }, 3000)
+    setTimeout(() => {
+      myvue.$set(myvue.$data, "hate", { fruit: "apple" })
+      myvue.$data.hate.fruit = "pear"  // 新增对象也能响应
+    }, 3000)
 
-    // setTimeout(() => {
-    //   myvue.hate.fruit = "banana"  // 代理后能直接通过this.xxx,而非this.$data.xxx 改变数据了！
-    // }, 4000)
+    setTimeout(() => {
+      myvue.hate.fruit = "banana"  // 代理后能直接通过this.xxx,而非this.$data.xxx 改变数据了！
+    }, 4000)
 
   </script>
 
