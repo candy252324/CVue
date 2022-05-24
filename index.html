@@ -29,22 +29,28 @@
       }
     })
 
+
     setTimeout(() => {
-      myvue.$data.arr.push(123)
+      console.log("-----------多层对象也能响应-----")
+      myvue.$data.fName.firstName = "nie"  // 多层对象也能响应
     }, 1000)
 
     setTimeout(() => {
-      myvue.$data.fName.firstName = "nie"  // 多层对象也能响应
+      console.log("-----------新增属性也能响应-----")
+      myvue.$set(myvue.$data, "hate", { fruit: "apple" })
+      myvue.$data.hate.fruit = "pear"
     }, 2000)
 
     setTimeout(() => {
-      myvue.$set(myvue.$data, "hate", { fruit: "apple" })
-      myvue.$data.hate.fruit = "pear"  // 新增对象也能响应
+      console.log("-----------代理后能直接通过this.xxx,而非this.$data.xxx 改变数据了-----")
+      myvue.hate.fruit = "banana"
     }, 3000)
 
     setTimeout(() => {
-      myvue.hate.fruit = "banana"  // 代理后能直接通过this.xxx,而非this.$data.xxx 改变数据了！
+      console.log("-----------数组操作-----")
+      myvue.$data.arr.push(123)
     }, 4000)
+
 
   </script>
 
