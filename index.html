@@ -25,7 +25,7 @@
         fName: { firstName: "chen" },
         myHtml: "<div style='color:red'>m-html</div>",
         hobby: "swim",
-        arr: [1, 2, 3]
+        arr: [1, { name: "hhh" }, 3]
       }
     })
 
@@ -47,10 +47,15 @@
     }, 3000)
 
     setTimeout(() => {
-      console.log("-----------数组操作-----")
-      myvue.$data.arr.push(123)
+      console.log("-----------数组中的对象也具有响应式-----")
+      myvue.$data.arr[1].name = "newvalue"
     }, 4000)
 
+    setTimeout(() => {
+      console.log("-----------数组中新增的对象也具有响应式-----")
+      myvue.$data.arr.push({ age: 18 })
+      myvue.$data.arr[3].age = 20
+    }, 5000)
 
   </script>
 
