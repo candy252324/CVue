@@ -28,24 +28,22 @@ export default class Compiler {
     let nodeTextStr = node.textContent
     const matchArr = new Set(nodeTextStr.match(/\{\{.*?\}\}/g))  // ["{{name}}","{{hobby}}"] 
     matchArr.forEach(matchStr => {
-      const exp = matchStr.replace(/\{/g, "").replace(/\}/g, "").trim()  // 取到插值里表达式： "name" or "hobby"
+      const cb = (originTextStr) => {
+        matchArr.forEach(matchStr => {
+          const exp = matchStr.replace(/\{/g, "").replace(/\}/g, "").trim()   // 取到插值里表达式： "name" or "hobby"
+          originTextStr = originTextStr.replace(new RegExp(matchStr, "g"), this.$vm[exp]) // 将"{{name}}" 替换成"name"的值
+        })
+        node.textContent = originTextStr  // 所有的插值表达式都被替换了
+      }
       // ！！！！注意：Watcher 的回调函数中必须要有 this.xxx 的数据读取操作，用于触发getter，收集依赖
+      // cjh todo 这里有个依赖被重复收集的问题：
+      // new Watcher写在forEach循环中，有n个插值表达式，则循环n次，产生n个watcher实例，这里没有问题
+      // 但是cb函数中也需要通过forEach循环去遍历替换插值表达式，导致产生n次this.xxx的数据读取操作，触发n次getter,进而导致触发n次依赖收集
+      // 如何优化？
       new Watcher(() => {
-        // 这里 nodeTextStr保留的是之前带花括号的文本, 形如 “我是{{name}},爱好{{hobby}}”
-        // 导致的结果是，forEach循环后只有最后一个插值被数据内容替换,所以这里加了一个方法updateOtherText用于更新剩下的插值表达式内容
-        node.textContent = nodeTextStr.replace(new RegExp(matchStr, "g"), this.$vm[exp])  //  将"{{name}}" 替换成"name"的值
-        this.updateOtherText(node, matchArr)
+        cb(nodeTextStr)
       })
     })
-  }
-  // cjh todo 这里写的不太好
-  updateOtherText(node, matchArr) {
-    let nodeTextStr = node.textContent
-    matchArr.forEach(matchStr => {
-      const exp = matchStr.replace(/\{/g, "").replace(/\}/g, "").trim()   // 取到插值里表达式： "name" or "hobby"
-      nodeTextStr = nodeTextStr.replace(new RegExp(matchStr, "g"), this.$vm[exp]) // 将"{{name}}" 替换成"name"的值
-    })
-    node.textContent = nodeTextStr  // 所有的插值表达式都被替换了
   }
   // 编译元素
   compileElement(node) {
@@ -70,18 +68,18 @@ export default class Compiler {
       else if (attrName.match(/m-model/)) {
         let tagName = node.tagName.toLowerCase()
         if (tagName === "input" && node.type === "text") {
+          node.addEventListener("input", (e) => {
+            this.$vm[exp] = e.target.value
+          })
           new Watcher(() => {
             node.value = this.$vm[exp]
-            node.addEventListener("input", (e) => {
-              this.$vm[exp] = e.target.value
-            })
           })
         } else if (tagName === "input" && node.type === "checkbox") {
+          node.addEventListener("input", (e) => {
+            this.$vm[exp] = e.target.checked
+          })
           new Watcher(() => {
             node.checked = this.$vm[exp]
-            node.addEventListener("input", (e) => {
-              this.$vm[exp] = e.target.checked
-            })
           })
         } else if (tagName === "select") {
 
@@ -90,11 +88,15 @@ export default class Compiler {
       }
       // <span m-text="name"></span>
       else if (attrName.match(/m-text/)) {
-        node.textContent = this.$vm[exp]
+        new Watcher(() => {
+          node.textContent = this.$vm[exp]
+        })
       }
       // <span m-html="name"></span>
       else if (attrName.match(/m-html/)) {
-        node.innerHTML = this.$vm[exp]
+        new Watcher(() => {
+          node.innerHTML = this.$vm[exp]
+        })
       }
     })
   }

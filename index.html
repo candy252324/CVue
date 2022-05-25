@@ -22,7 +22,8 @@
     <h2 m-html="myHtml"></h2>
     <button m-on:click="foo">点击增加count</button>count: {{count}}
     <div class="line">
-      输入框值为：{{name}} <input type="text" m-model="name">
+      输入框值为：{{name}}
+      <input type="text" m-model="name">
     </div>
     <div class="line">
       复选框值为：{{checked}}<input type="checkbox" m-model="checked">
@@ -53,32 +54,32 @@
     // }, 1000)
 
 
-    setTimeout(() => {
-      console.log("-----------多层对象也能响应-----")
-      myvue.$data.fName.firstName = "nie"  // 多层对象也能响应
-    }, 1000)
+    // setTimeout(() => {
+    //   console.log("-----------多层对象也能响应-----")
+    //   myvue.$data.fName.firstName = "nie"  // 多层对象也能响应
+    // }, 1000)
 
-    setTimeout(() => {
-      console.log("-----------新增属性也能响应-----")
-      myvue.$set(myvue.$data, "hate", { fruit: "apple" })
-      myvue.$data.hate.fruit = "pear"
-    }, 2000)
+    // setTimeout(() => {
+    //   console.log("-----------新增属性也能响应-----")
+    //   myvue.$set(myvue.$data, "hate", { fruit: "apple" })
+    //   myvue.$data.hate.fruit = "pear"
+    // }, 2000)
 
-    setTimeout(() => {
-      console.log("-----------代理后能直接通过this.xxx,而非this.$data.xxx 改变数据了-----")
-      myvue.hate.fruit = "banana"
-    }, 3000)
+    // setTimeout(() => {
+    //   console.log("-----------代理后能直接通过this.xxx,而非this.$data.xxx 改变数据了-----")
+    //   myvue.hate.fruit = "banana"
+    // }, 3000)
 
-    setTimeout(() => {
-      console.log("-----------数组中的对象也具有响应式-----")
-      myvue.$data.arr[1].name = "newvalue"
-    }, 4000)
+    // setTimeout(() => {
+    //   console.log("-----------数组中的对象也具有响应式-----")
+    //   myvue.$data.arr[1].name = "newvalue"
+    // }, 4000)
 
-    setTimeout(() => {
-      console.log("-----------数组中新增的对象也具有响应式-----")
-      myvue.$data.arr.push({ age: 18 })
-      myvue.$data.arr[3].age = 20
-    }, 5000)
+    // setTimeout(() => {
+    //   console.log("-----------数组中新增的对象也具有响应式-----")
+    //   myvue.$data.arr.push({ age: 18 })
+    //   myvue.$data.arr[3].age = 20
+    // }, 5000)
 
   </script>
 
