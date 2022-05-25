@@ -6,6 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <style>
+    .line {
+      margin: 10px 0;
+    }
+  </style>
 </head>
 
 <body>
@@ -15,23 +20,37 @@
       m-text:<span m-text="name"></span>
     </h2>
     <h2 m-html="myHtml"></h2>
+    <button m-on:click="foo">点击增加count</button>count: {{count}}
+    <div class="line">
+      输入框值为：{{name}} <input type="text" m-model="name">
+    </div>
+    <div class="line">
+      复选框值为：{{checked}}<input type="checkbox" m-model="checked">
+    </div>
   </div>
   <script type="module">
     import MVue from './index.mjs'
     const myvue = new MVue({
       el: "#app",
       data: {
+        count: 0,
         name: "cxx",
         fName: { firstName: "chen" },
         myHtml: "<div style='color:red'>m-html</div>",
         hobby: "swim",
-        arr: [1, { name: "hhh" }, 3]
+        arr: [1, { name: "hhh" }, 3],
+        checked: true
+      },
+      methods: {
+        foo(text) {
+          this.count++
+        }
       }
     })
 
-    setInterval(() => {
-      myvue.name = Math.random()
-    }, 1000)
+    // setInterval(() => {
+    //   myvue.name = Math.random()
+    // }, 1000)
 
 
     setTimeout(() => {

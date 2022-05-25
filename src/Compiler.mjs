@@ -10,9 +10,12 @@ export default class Compiler {
   }
   compile(el) {
     el.childNodes.forEach(node => {
-      if (this.isElement(node)) {
+      // 元素
+      if (node.nodeType === 1) {
         this.compileElement(node)
-      } else if (this.isText(node)) {
+      }
+      // 是否插值表达式 {{ }}
+      else if (node.nodeType === 3 && /\{\{.*?\}\}/.test(node.textContent)) {
         this.compileText(node)
       }
       if (node.hasChildNodes()) {
@@ -51,30 +54,48 @@ export default class Compiler {
       // m-text="name"
       const attrName = attr.name  //  m-text
       const exp = attr.value   //  name
-      if (this.isDirective(attrName)) {
-        const dir = attrName.slice(2)  // text
-        this[dir] && this[dir](node, exp)
+
+      // <button m-onclick="foo"/>
+      if (attrName.match(/m-on:click/) || attrName.match(/@click/)) {
+        const fn = this.$vm.$options.methods[exp]
+        node.addEventListener("click", () => {
+          fn.apply(this.$vm)
+        })
+      }
+      // <span m-bind:title="xxx"></span>
+      else if (attrName.match(/m-bind:/)) {
+        // cjh todo
+      }
+      // <input type="text" v-model="name">
+      else if (attrName.match(/m-model/)) {
+        let tagName = node.tagName.toLowerCase()
+        if (tagName === "input" && node.type === "text") {
+          new Watcher(() => {
+            node.value = this.$vm[exp]
+            node.addEventListener("input", (e) => {
+              this.$vm[exp] = e.target.value
+            })
+          })
+        } else if (tagName === "input" && node.type === "checkbox") {
+          new Watcher(() => {
+            node.checked = this.$vm[exp]
+            node.addEventListener("input", (e) => {
+              this.$vm[exp] = e.target.checked
+            })
+          })
+        } else if (tagName === "select") {
+
+        }
+
+      }
+      // <span m-text="name"></span>
+      else if (attrName.match(/m-text/)) {
+        node.textContent = this.$vm[exp]
+      }
+      // <span m-html="name"></span>
+      else if (attrName.match(/m-html/)) {
+        node.innerHTML = this.$vm[exp]
       }
     })
-  }
-  // 渲染v-text 
-  text(node, exp) {
-    node.textContent = this.$vm[exp]
-  }
-  // 渲染v-html
-  html(node, exp) {
-    node.innerHTML = this.$vm[exp]
-  }
-  // 判断是否是指令，如，m-text，m-html
-  isDirective(attrName) {
-    return attrName.indexOf("m-") === 0
-  }
-  // 是否是元素
-  isElement(node) {
-    return node.nodeType === 1
-  }
-  // 是否插值表达式{{}}
-  isText(node) {
-    return node.nodeType === 3 && /\{\{.*?\}\}/.test(node.textContent)
   }
 }
