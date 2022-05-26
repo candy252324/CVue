@@ -7,7 +7,7 @@ import observe from './observe.mjs'
 export default class Observer {
   constructor(obj) {
     // 给vm.$data里嵌套的每一个对象和数组都添加一个__ob__属性，并且在__ob__属性上再添加一个dep属性
-    // 目的：数组通知依赖的时候 cjh todo?
+    // 目的：当data里的数组发生变化时，用于通知更新
     Object.defineProperty(obj, "__ob__", {
       value: this,
       // 防止递归的时候处理__ob__，导致无限递归

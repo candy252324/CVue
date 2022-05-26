@@ -31,7 +31,8 @@ export default class Compiler {
       const cb = (originTextStr) => {
         matchArr.forEach(matchStr => {
           const exp = matchStr.replace(/\{/g, "").replace(/\}/g, "").trim()   // 取到插值里表达式： "name" or "hobby"
-          originTextStr = originTextStr.replace(new RegExp(matchStr, "g"), this.$vm[exp]) // 将"{{name}}" 替换成"name"的值
+          const value = this.$vm[exp]  // 将"{{name}}" 替换成"name"的值
+          originTextStr = originTextStr.replace(new RegExp(matchStr, "g"), typeof (value) === "object" ? JSON.stringify(value) : value)
         })
         node.textContent = originTextStr  // 所有的插值表达式都被替换了
       }
