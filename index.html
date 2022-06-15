@@ -17,16 +17,16 @@
   <div id="app">
     <h2>插值表达式：姓名{{ name}}，爱好{{hobby}}</h2>
     <h2>
-      m-text:<span m-text="name"></span>
+      v-text:<span v-text="name"></span>
     </h2>
-    <h2 m-html="myHtml"></h2>
-    <button m-on:click="foo">点击增加count</button>count: {{count}}
+    <h2 v-html="myHtml"></h2>
+    <button v-on:click="foo">点击增加count</button>count: {{count}}
     <div class="line">
       输入框值为：{{name}}
-      <input type="text" m-model="name">
+      <input type="text" v-model="name">
     </div>
     <div class="line">
-      复选框值为：{{checked}}<input type="checkbox" m-model="checked">
+      复选框值为：{{checked}}<input type="checkbox" v-model="checked">
     </div>
   </div>
   <script type="module">
@@ -37,7 +37,7 @@
         count: 0,
         name: "cxx",
         fName: { firstName: "chen" },
-        myHtml: "<div style='color:red'>m-html</div>",
+        myHtml: "<div style='color:red'>v-html</div>",
         hobby: "swim",
         arr: [1, { name: "hhh" }, 3],
         checked: true

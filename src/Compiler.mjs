@@ -50,23 +50,23 @@ export default class Compiler {
   compileElement(node) {
     let attrList = node.attributes
     Array.from(attrList).forEach(attr => {
-      // m-text="name"
-      const attrName = attr.name  //  m-text
+      // v-text="name"
+      const attrName = attr.name  //  v-text
       const exp = attr.value   //  name
 
-      // <button m-onclick="foo"/>
-      if (attrName.match(/m-on:click/) || attrName.match(/@click/)) {
+      // <button v-on:click="foo"/>
+      if (attrName.match(/v-on:click/) || attrName.match(/@click/)) {
         const fn = this.$vm.$options.methods[exp]
         node.addEventListener("click", () => {
           fn.apply(this.$vm)
         })
       }
-      // <span m-bind:title="xxx"></span>
-      else if (attrName.match(/m-bind:/)) {
+      // <span v-bind:title="xxx"></span>
+      else if (attrName.match(/v-bind:/)) {
         // cjh todo
       }
       // <input type="text" v-model="name">
-      else if (attrName.match(/m-model/)) {
+      else if (attrName.match(/v-model/)) {
         let tagName = node.tagName.toLowerCase()
         if (tagName === "input" && node.type === "text") {
           node.addEventListener("input", (e) => {
@@ -87,14 +87,14 @@ export default class Compiler {
         }
 
       }
-      // <span m-text="name"></span>
-      else if (attrName.match(/m-text/)) {
+      // <span v-text="name"></span>
+      else if (attrName.match(/v-text/)) {
         new Watcher(() => {
           node.textContent = this.$vm[exp]
         })
       }
-      // <span m-html="name"></span>
-      else if (attrName.match(/m-html/)) {
+      // <span v-html="name"></span>
+      else if (attrName.match(/v-html/)) {
         new Watcher(() => {
           node.innerHTML = this.$vm[exp]
         })
