@@ -37,10 +37,6 @@ export default class Compiler {
         node.textContent = originTextStr  // 所有的插值表达式都被替换了
       }
       // ！！！！注意：Watcher 的回调函数中必须要有 this.xxx 的数据读取操作，用于触发getter，收集依赖
-      // cjh todo 这里有个依赖被重复收集的问题：
-      // new Watcher写在forEach循环中，有n个插值表达式，则循环n次，产生n个watcher实例，这里没有问题
-      // 但是cb函数中也需要通过forEach循环去遍历替换插值表达式，导致产生n次this.xxx的数据读取操作，触发n次getter,进而导致触发n次依赖收集
-      // 如何优化？
       new Watcher(() => {
         cb(nodeTextStr)
       })
